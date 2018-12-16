@@ -44,6 +44,9 @@ namespace UnityMediaControl
 
         private static void AttemptSetMediaPlaying(bool playing)
         {
+            // don't do anything if not enabled
+            if (!Preferences.Enabled) return;
+
             // don't unpause if we didn't pause
             if (!pausedMedia && playing) return;
 
