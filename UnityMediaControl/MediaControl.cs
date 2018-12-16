@@ -44,6 +44,8 @@ namespace UnityMediaControl
 
         private static void AttemptSetMediaPlaying(bool playing)
         {
+            // don't unpause if we didn't pause
+            if (!pausedMedia && playing) return;
 
             // do some checks to see if we need to change play state
             if(!pausedMedia || !playing) // if we didn't already pause or are trying to pause
