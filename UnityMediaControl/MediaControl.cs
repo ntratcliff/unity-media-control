@@ -1,15 +1,17 @@
 ﻿/* Noah Ratcliff - 2018 */
 
 using UnityEditor;
-using WinAppcommand = MediaControl.User32Interop.Appcommand;
+using UnityEngine;
+using WinAppcommand = UnityMediaControl.User32Interop.Appcommand;
 
-namespace MediaControl
+namespace UnityMediaControl
 {
     [InitializeOnLoad]
     internal static class MediaControl
     {
         static MediaControl()
         {
+            Debug.Log("Media Control Initialized!");
             EditorApplication.playModeStateChanged += (state) =>
             {
                 switch (state)

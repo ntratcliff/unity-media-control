@@ -2,7 +2,7 @@
 
 using System.Runtime.InteropServices;
 
-namespace MediaControl
+namespace UnityMediaControl
 {
     internal static class User32Interop
     {
