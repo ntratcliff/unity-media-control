@@ -8,7 +8,15 @@ namespace UnityMediaControl
     {
         private static class Prefs
         {
+            /// <summary>
+            /// Global enabled flag
+            /// </summary>
             public static EditorPref<bool> Enabled = new EditorPref<bool>("enabled", true);
+
+            /// <summary>
+            /// Whether or not to resume media playback when play mode is paused
+            /// </summary>
+            public static EditorPref<bool> ResumeOnPause = new EditorPref<bool>("resumeOnPause", false);
         }
 
         /// <summary>
@@ -21,17 +29,28 @@ namespace UnityMediaControl
         /// </summary>
         public static bool Enabled { get { return Prefs.Enabled.Value; } }
 
+        /// <summary>
+        /// Whether or not to resume media playback when the editor is paused
+        /// </summary>
+        public static bool ResumeOnPause { get { return Prefs.ResumeOnPause.Value; } }
+
         static Preferences()
         {
             LoadPrefs();
         }
 
-        [PreferenceItem("Unity Media Control")]
+        [PreferenceItem("Media Control")]
         public static void PreferencesGUI()
         {
             if (!Loaded) LoadPrefs();
 
             PrefOptionGUI("Enabled", Prefs.Enabled, "Whether or not Unity Media Control is enabled");
+
+            EditorGUI.BeginDisabledGroup(!Enabled); // disable other options UMC is disabled
+
+            PrefOptionGUI("Resume playback on editor pause", Prefs.ResumeOnPause, "Whether or not to unpause your media when you pause the editor");
+
+            EditorGUI.EndDisabledGroup();
         }
 
         /// <summary>
@@ -52,6 +71,7 @@ namespace UnityMediaControl
         private static void LoadPrefs()
         {
             LoadPref(Prefs.Enabled);
+            LoadPref(Prefs.ResumeOnPause);
 
             Loaded = true;
         }

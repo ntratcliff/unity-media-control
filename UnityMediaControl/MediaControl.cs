@@ -17,6 +17,7 @@ namespace UnityMediaControl
         static MediaControl()
         {
             EditorApplication.playModeStateChanged += OnPlayModeStateChanged;
+            EditorApplication.pauseStateChanged += OnPauseStateChanged;
         }
 
         private static void OnPlayModeStateChanged(PlayModeStateChange state)
@@ -24,22 +25,27 @@ namespace UnityMediaControl
             switch (state)
             {
                 case PlayModeStateChange.EnteredPlayMode:
-                    OnEnterPlayMode();
+                    AttemptSetMediaPlaying(false);
                     break;
                 case PlayModeStateChange.ExitingPlayMode:
-                    OnExitPlayMode();
+                    AttemptSetMediaPlaying(true);
                     break;
             }
         }
 
-        private static void OnEnterPlayMode()
+        private static void OnPauseStateChanged(PauseState state)
         {
-            AttemptSetMediaPlaying(false);
-        }
+            if (!Preferences.ResumeOnPause) return;
 
-        private static void OnExitPlayMode()
-        {
-            AttemptSetMediaPlaying(true);
+            switch (state)
+            {
+                case PauseState.Paused:
+                    AttemptSetMediaPlaying(true);
+                    break;
+                case PauseState.Unpaused:
+                    AttemptSetMediaPlaying(false);
+                    break;
+            }
         }
 
         private static void AttemptSetMediaPlaying(bool playing)
