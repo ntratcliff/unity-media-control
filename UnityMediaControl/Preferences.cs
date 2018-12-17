@@ -1,5 +1,6 @@
 ﻿using System;
 using UnityEditor;
+using UnityEngine;
 
 namespace UnityMediaControl
 {
@@ -30,16 +31,16 @@ namespace UnityMediaControl
         {
             if (!Loaded) LoadPrefs();
 
-            PrefOptionGUI("Enabled", Prefs.Enabled);
+            PrefOptionGUI("Enabled", Prefs.Enabled, "Whether or not Unity Media Control is enabled");
         }
 
         /// <summary>
         /// Draw an option for a player pref
         /// </summary>
-        private static void PrefOptionGUI(string label, EditorPref<bool> pref)
+        private static void PrefOptionGUI(string label, EditorPref<bool> pref, string tooltip)
         {
             bool initial = pref.Value;
-            pref.Value = EditorGUILayout.Toggle(label, pref.Value);
+            pref.Value = EditorGUILayout.Toggle(new GUIContent(label, tooltip), pref.Value);
             
             // check if value changed
             if(initial != pref.Value)
