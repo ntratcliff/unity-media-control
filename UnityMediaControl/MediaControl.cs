@@ -63,6 +63,16 @@ namespace UnityMediaControl
                 if (EditorUtility.audioMasterMute) return;
             }
 
+            if (Preferences.TargetMode == Preferences.WindowTargetMode.Broadcast)
+                SetMediaPlayingBroadcast(playing);
+            else
+                SetMediaPlayingTargeted(playing);
+
+            pausedMedia = !playing;
+        }
+
+        private static void SetMediaPlayingBroadcast(bool playing)
+        {
             if (playing)
             {
                 // play media
@@ -73,8 +83,18 @@ namespace UnityMediaControl
                 // pause media
                 User32Interop.BroadcastAppcommand(WinAppcommand.MediaPause);
             }
+        }
 
-            pausedMedia = !playing;
+        private static void SetMediaPlayingTargeted(bool playing)
+        {
+            WinAppcommand command = playing ? WinAppcommand.MediaPlay : WinAppcommand.MediaPause;
+
+            for (int i = 0; i < Preferences.TargetWindows.Count; i++)
+            {
+                int handle = User32Interop.FindWindow(Preferences.TargetWindows[i]);
+                if (handle != User32Interop.HWND_NONE)
+                    User32Interop.SendAppcommand(handle, command);
+            }
         }
     }
 }

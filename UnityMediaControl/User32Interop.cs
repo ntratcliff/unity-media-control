@@ -15,9 +15,11 @@ namespace UnityMediaControl
             MediaPause = 47,
         }
 
-        public const int HWIND_BROADCAST = 0xffff;
+        public const int HWND_BROADCAST = 0xffff;
 
         public const int WM_APPCOMMAND = 0x319;
+
+        public const int HWND_NONE = 0;
 
         private delegate bool EnumWindowsProc(IntPtr hWnd, int lParam);
 
@@ -47,7 +49,12 @@ namespace UnityMediaControl
 
         public static int BroadcastAppcommand(Appcommand command)
         {
-            return SendMessage(HWIND_BROADCAST, WM_APPCOMMAND, 0, (int)command << 16);
+            return SendAppcommand(HWND_BROADCAST, command);
+        }
+
+        public static int SendAppcommand(int hWnd, Appcommand command)
+        {
+            return SendMessage(hWnd, WM_APPCOMMAND, 0, (int)command << 16);
         }
 
         public static WindowDescription[] EnumerateWindows()
@@ -94,6 +101,45 @@ namespace UnityMediaControl
             GetClassName(hWnd, builder, maxLen + 2);
 
             return builder.ToString();
+        }
+
+        public enum WindowSearchMode
+        {
+            MatchClass = 1 << 0,
+            MatchTitle = 1 << 1,
+            MatchBoth = 1 << 2,
+            MatchEither = MatchClass | MatchTitle,
+            Any = MatchClass | MatchTitle | MatchBoth
+        }
+
+        public static int FindWindow(TargetWindow window, WindowSearchMode searchMode = WindowSearchMode.Any)
+        {
+            int hWnd = HWND_NONE;
+
+            // try explicit search first
+            if (HasFlag((int)searchMode, (int)WindowSearchMode.MatchBoth))
+            {
+                hWnd = FindWindow(window.Class, window.Title);
+            }
+
+            // try class next
+            if (hWnd == HWND_NONE && HasFlag((int)searchMode, (int)WindowSearchMode.MatchClass))
+            {
+                hWnd = FindWindow(window.Class, null);
+            }
+             
+            // try name next
+            if(hWnd == HWND_NONE)
+            {
+                hWnd = FindWindow(null, window.Title);
+            }
+
+            return hWnd;
+        }
+
+        private static bool HasFlag(int e, int flag)
+        {
+            return (e & flag) != 0;
         }
     }
 

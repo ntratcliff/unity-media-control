@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEditor;
 using UnityEditor.IMGUI.Controls;
 using UnityEngine;
@@ -31,6 +32,8 @@ namespace UnityMediaControl
 
     internal class ActiveWindowsTreeView : TreeView
     {
+        public event Action<ActiveWindowsTreeViewItem, bool> OnSelectionChanged;
+
         public ActiveWindowsTreeView(TreeViewState state) : base(state)
         {
             showBorder = true;
@@ -46,6 +49,19 @@ namespace UnityMediaControl
             {
                 WindowDescription window = windows[i];
                 ActiveWindowsTreeViewItem item = new ActiveWindowsTreeViewItem((int)window.Handle, 0, window.Name, window.ClassName);
+
+                for (int j = 0; j < Preferences.TargetWindows.Count; j++)
+                {
+                    Debug.LogFormat("Matching {0} against {1}\n {2} vs {3}", window.Name, Preferences.TargetWindows[j].Title, (int)window.Handle, Preferences.TargetWindows[j].Handle);
+                    // try matching name and class first 
+                    if (Preferences.TargetWindows[j].Title == window.Name
+                        && Preferences.TargetWindows[j].Class == window.ClassName)
+                        item.Selected = true;
+                    // try matching by handle
+                    else if (Preferences.TargetWindows[j].Handle == (int)window.Handle)
+                        item.Selected = true;
+                }
+
                 root.AddChild(item);
             }
             return root;
@@ -88,7 +104,8 @@ namespace UnityMediaControl
                         {
                             ActiveWindowsTreeViewItem item = FindItem(id, rootItem) as ActiveWindowsTreeViewItem;
                             item.Selected = newState;
-                            // TODO: do something when a window is selected
+                            if (OnSelectionChanged != null)
+                                OnSelectionChanged(item, newState);
                         }
                     }
                     else

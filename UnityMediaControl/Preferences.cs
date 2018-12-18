@@ -123,6 +123,7 @@ namespace UnityMediaControl
                 if (activeWindowsTreeState == null)
                     activeWindowsTreeState = new TreeViewState();
                 activeWindowsTreeView = new ActiveWindowsTreeView(activeWindowsTreeState);
+                activeWindowsTreeView.OnSelectionChanged += ActiveWindowSelectionChanged;
                 activeWindowsTreeView.Reload();
             }
 
@@ -138,6 +139,24 @@ namespace UnityMediaControl
             Rect control = EditorGUILayout.GetControlRect();
             control.height = 300;
             activeWindowsTreeView.OnGUI(control);
+        }
+
+        private static void ActiveWindowSelectionChanged(ActiveWindowsTreeViewItem item, bool selected)
+        {
+            TargetWindow window = new TargetWindow(item.WindowClass, item.WindowTitle);
+            window.Handle = item.id;
+
+            bool shouldChange = selected != TargetWindows.Contains(window);
+
+            if (shouldChange)
+            {
+                if (selected)
+                    TargetWindows.Add(window);
+                else
+                    TargetWindows.Remove(window);
+
+                SaveTargetWindows();
+            }
         }
 
         /// <summary>
@@ -187,6 +206,7 @@ namespace UnityMediaControl
                 TargetWindows.Add(new TargetWindow(
                     Prefs.TargetWindowClassNames.Values[i],
                     Prefs.TargetWindowNames.Values[i]));
+                Debug.LogFormat("Loaded target window: {0}", TargetWindows[i]);
             }
         }
 
