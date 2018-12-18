@@ -17,6 +17,11 @@ namespace UnityMediaControl
             /// Whether or not to resume media playback when play mode is paused
             /// </summary>
             public static EditorPref<bool> ResumeOnPause = new EditorPref<bool>("resumeOnPause", false);
+
+            /// <summary>
+            /// Whether or not to check if Spotify is playing
+            /// </summary>
+            public static EditorPref<bool> CheckForSpotify = new EditorPref<bool>("checkForSpotify", true);
         }
 
         /// <summary>
@@ -34,6 +39,8 @@ namespace UnityMediaControl
         /// </summary>
         public static bool ResumeOnPause { get { return Prefs.ResumeOnPause.Value; } }
 
+        public static bool CheckForSpotify { get { return Prefs.CheckForSpotify.Value; } }
+
         static Preferences()
         {
             LoadPrefs();
@@ -49,6 +56,7 @@ namespace UnityMediaControl
             EditorGUI.BeginDisabledGroup(!Enabled); // disable other options UMC is disabled
 
             PrefOptionGUI("Resume playback on editor pause", Prefs.ResumeOnPause, "Whether or not to unpause your media when you pause the editor");
+            PrefOptionGUI("Check for Spotify", Prefs.CheckForSpotify, "Attempts to control Spotify directly, if it's running. Enabling should stop Spotify from accidentally unpausing if it wasn't playing when you entered playmode. Disable this if you don't use Spotify.");
 
             EditorGUI.EndDisabledGroup();
         }
@@ -72,6 +80,7 @@ namespace UnityMediaControl
         {
             LoadPref(Prefs.Enabled);
             LoadPref(Prefs.ResumeOnPause);
+            LoadPref(Prefs.CheckForSpotify);
 
             Loaded = true;
         }
