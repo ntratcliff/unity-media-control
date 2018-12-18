@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
 using UnityEditor;
+using UnityEditor.IMGUI.Controls;
 using UnityEngine;
 
 namespace UnityMediaControl
@@ -39,6 +39,12 @@ namespace UnityMediaControl
             public static EditorPrefList<string> TargetWindowNames = new EditorPrefList<string>("targetWindowNames", string.Empty);
         }
 
+        private static class Styles
+        {
+            public static readonly GUIContent activeWindows = EditorGUIUtility.TrTextContent("Active Windows", "Current active windows");
+            public static readonly GUIContent refreshWindows = EditorGUIUtility.TrTextContent("Refresh", "Refresh active windows list");
+        }
+
         public enum WindowTargetMode
         {
             /// <summary>
@@ -67,7 +73,15 @@ namespace UnityMediaControl
         /// </summary>
         public static bool ResumeOnPause { get { return Prefs.ResumeOnPause.Value; } }
 
+        /// <summary>
+        /// Current window target mode
+        /// </summary>
         public static WindowTargetMode TargetMode { get { return (WindowTargetMode)Prefs.TargetMode.Value; } }
+
+        /// <summary>
+        /// Windows to target if target mode is <see cref="WindowTargetMode.SpecificWindows"/>
+        /// </summary>
+        public static List<TargetWindow> TargetWindows;
 
         static Preferences()
         {
@@ -89,12 +103,41 @@ namespace UnityMediaControl
             int initial = Prefs.TargetMode.Value;
             Prefs.TargetMode.Value = Convert.ToInt32(EditorGUILayout.EnumPopup(
                 new GUIContent("Window Target Mode", "How UMC targets applications to play/pause media"), TargetMode));
-            if(Prefs.TargetMode.Value != initial)
+            if (Prefs.TargetMode.Value != initial)
             {
                 SavePref(Prefs.TargetMode);
             }
 
+            // window target selection
+            ActiveWindowsGUI();
+
             EditorGUI.EndDisabledGroup();
+        }
+
+        static ActiveWindowsTreeView activeWindowsTreeView;
+        static TreeViewState activeWindowsTreeState;
+        private static void ActiveWindowsGUI()
+        {
+            if (activeWindowsTreeView == null)
+            {
+                if (activeWindowsTreeState == null)
+                    activeWindowsTreeState = new TreeViewState();
+                activeWindowsTreeView = new ActiveWindowsTreeView(activeWindowsTreeState);
+                activeWindowsTreeView.Reload();
+            }
+
+            EditorGUILayout.BeginHorizontal();
+            EditorGUILayout.LabelField(Styles.activeWindows, EditorStyles.boldLabel);
+
+            if (GUILayout.Button(Styles.refreshWindows))
+            {
+                activeWindowsTreeView.Reload();
+            }
+            EditorGUILayout.EndHorizontal();
+
+            Rect control = EditorGUILayout.GetControlRect();
+            control.height = 300;
+            activeWindowsTreeView.OnGUI(control);
         }
 
         /// <summary>
@@ -104,9 +147,9 @@ namespace UnityMediaControl
         {
             bool initial = pref.Value;
             pref.Value = EditorGUILayout.Toggle(new GUIContent(label, tooltip), pref.Value);
-            
+
             // check if value changed
-            if(initial != pref.Value)
+            if (initial != pref.Value)
             {
                 SavePref(pref);
             }
@@ -117,10 +160,49 @@ namespace UnityMediaControl
             LoadPref(Prefs.Enabled);
             LoadPref(Prefs.ResumeOnPause);
             LoadPref(Prefs.TargetMode);
+
+            LoadTargetWindows();
+
+            Loaded = true;
+        }
+
+        private static void LoadTargetWindows()
+        {
+            TargetWindows = new List<TargetWindow>();
+
             LoadPref(Prefs.TargetWindowNames);
             LoadPref(Prefs.TargetWindowClassNames);
 
-            Loaded = true;
+            // double check that lists are the same
+            if (Prefs.TargetWindowNames.Values.Count != Prefs.TargetWindowClassNames.Values.Count)
+            {
+                Debug.LogErrorFormat("[UnityMediaControl] Error loading preferences! Target windows value invalid. Resetting to default...");
+                // reset target prefs if invalid
+                SaveTargetWindows(); // saves empty list
+            }
+
+            // initialize list
+            for (int i = 0; i < Prefs.TargetWindowNames.Values.Count; i++)
+            {
+                TargetWindows.Add(new TargetWindow(
+                    Prefs.TargetWindowClassNames.Values[i],
+                    Prefs.TargetWindowNames.Values[i]));
+            }
+        }
+
+        private static void SaveTargetWindows()
+        {
+            Prefs.TargetWindowNames.Values.Clear();
+            Prefs.TargetWindowClassNames.Values.Clear();
+
+            for (int i = 0; i < TargetWindows.Count; i++)
+            {
+                Prefs.TargetWindowNames.Values.Add(TargetWindows[i].Title);
+                Prefs.TargetWindowClassNames.Values.Add(TargetWindows[i].Class);
+            }
+
+            SavePref(Prefs.TargetWindowNames);
+            SavePref(Prefs.TargetWindowClassNames);
         }
 
         private static void LoadPref(EditorPref<bool> pref)
@@ -152,7 +234,7 @@ namespace UnityMediaControl
         {
             prefList.Save();
         }
-        
+
 
         /// <summary>
         /// Holds information and data for an editor preference
