@@ -1,7 +1,6 @@
 ﻿/* Noah Ratcliff - 2018 */
 
 using UnityEditor;
-using UnityEngine;
 using WinAppcommand = UnityMediaControl.User32Interop.Appcommand;
 
 namespace UnityMediaControl
@@ -57,7 +56,7 @@ namespace UnityMediaControl
             if (!pausedMedia && playing) return;
 
             // do some checks to see if we need to change play state
-            if(!pausedMedia || !playing) // if we didn't already pause or are trying to pause
+            if (!pausedMedia || !playing) // if we didn't already pause or are trying to pause
             {
                 // is editor muted?
                 if (EditorUtility.audioMasterMute) return;
