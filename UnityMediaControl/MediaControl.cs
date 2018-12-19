@@ -66,7 +66,12 @@ namespace UnityMediaControl
             }
 
             // spotify is running, check if it is already in the desired state (prevents accidental unpause)
-            if (Preferences.CheckForSpotify && IsSpotifyRunning() && IsSpotifyPlaying() == playing) return;
+            if (Preferences.CheckForSpotify)
+            {
+                Spotify.Instance.Refresh();
+
+                if (Spotify.Instance.IsPlaying == playing) return;
+            }
 
             if (playing)
             {
@@ -80,36 +85,6 @@ namespace UnityMediaControl
             }
 
             pausedMedia = !playing;
-        }
-
-        /// <summary>
-        /// Get the Spotify process
-        /// </summary>
-        private static string GetSpotifyTitle()
-        {
-            IntPtr handle = User32Interop.GetWindowByProcessName("Spotify");
-            if (handle != IntPtr.Zero)
-                return User32Interop.GetWindowText(handle);
-            return null;
-        }
-
-        /// <summary>
-        /// Checks if Spotify is running
-        /// </summary>
-        private static bool IsSpotifyRunning()
-        {
-            return GetSpotifyTitle() != null;
-        }
-
-        private static bool IsSpotifyPlaying()
-        {
-            // check if Spotify title is song name or "Spotify"
-            string title = GetSpotifyTitle();
-
-            if (title == null) return false;
-
-            //Debug.Log("Spotify main window title: " + title);
-            return title != "Spotify";
         }
     }
 }
