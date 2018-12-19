@@ -41,8 +41,8 @@ namespace UnityMediaControl
         /// </summary>
         private static void OnPauseStateChanged(PauseState state)
         {
-            // don't control media on pause if ResumeOnPause is not enabled
-            if (!Preferences.ResumeOnPause) return;
+            // don't control media on pause if ResumeOnPause is not enabled or editor is not in play mode
+            if (!Preferences.ResumeOnPause || !EditorApplication.isPlaying) return;
 
             switch (state)
             {
