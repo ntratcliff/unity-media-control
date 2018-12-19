@@ -1,6 +1,4 @@
-﻿using System;
-using UnityEditor;
-using UnityEngine;
+﻿using UnityEditor;
 
 namespace UnityMediaControl
 {
@@ -76,7 +74,7 @@ namespace UnityMediaControl
         {
             EditorPrefs.SetBool(pref.Key, pref.Value);
         }
-        
+
 
         /// <summary>
         /// Holds information and data for an editor preference

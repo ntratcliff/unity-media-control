@@ -1,6 +1,4 @@
-﻿/* Noah Ratcliff - 2018 */
-
-using UnityEditor;
+﻿using UnityEditor;
 using WinAppcommand = UnityMediaControl.User32Interop.Appcommand;
 
 namespace UnityMediaControl
