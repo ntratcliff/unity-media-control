@@ -1,9 +1,6 @@
 ﻿/* Noah Ratcliff - 2018 */
 
-using System;
-using System.Diagnostics;
 using UnityEditor;
-using Debug = UnityEngine.Debug;
 using WinAppcommand = UnityMediaControl.User32Interop.Appcommand;
 
 namespace UnityMediaControl
@@ -65,9 +62,9 @@ namespace UnityMediaControl
                 if (EditorUtility.audioMasterMute) return;
             }
 
-            // spotify is running, check if it is already in the desired state (prevents accidental unpause)
             if (Preferences.CheckForSpotify)
             {
+                // check if spotify is already in the desired state (prevents accidental unpause)
                 Spotify.Instance.Refresh();
 
                 if (Spotify.Instance.IsPlaying == playing) return;
