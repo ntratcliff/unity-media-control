@@ -39,6 +39,9 @@ namespace UnityMediaControl
         /// </summary>
         public static bool ResumeOnPause { get { return Prefs.ResumeOnPause.Value; } }
 
+        /// <summary>
+        /// Whether or not to check if Spotify is playing
+        /// </summary>
         public static bool CheckForSpotify { get { return Prefs.CheckForSpotify.Value; } }
 
         static Preferences()
@@ -46,6 +49,9 @@ namespace UnityMediaControl
             LoadPrefs();
         }
 
+        /// <summary>
+        /// Load all preferences from EditorPrefs
+        /// </summary>
         private static void LoadPrefs()
         {
             LoadPref(Prefs.Enabled);
@@ -55,11 +61,17 @@ namespace UnityMediaControl
             Loaded = true;
         }
 
+        /// <summary>
+        /// Load a bool pref from EditorPrefs
+        /// </summary>
         private static void LoadPref(EditorPref<bool> pref)
         {
             pref.Value = EditorPrefs.GetBool(pref.Key, pref.DefaultValue);
         }
 
+        /// <summary>
+        /// Save a bool pref to EditorPrefs
+        /// </summary>
         private static void SavePref(EditorPref<bool> pref)
         {
             EditorPrefs.SetBool(pref.Key, pref.Value);

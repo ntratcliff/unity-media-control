@@ -62,6 +62,9 @@ namespace UnityMediaControl
             }
         }
 
+        /// <summary>
+        /// The Spotify window title. Will be null if Spotify is not running
+        /// </summary>
         public string Title { get; private set; }
 
         public Spotify()
@@ -86,17 +89,7 @@ namespace UnityMediaControl
         {
             if (!IsRunning) return null;
 
-            string text = User32Interop.GetWindowText(windowHandle);
-
-            if (!string.IsNullOrEmpty(text))
-            {
-                return text;
-            }
-            else
-            {
-                RefreshWindowHandle();
-                return User32Interop.GetWindowText(windowHandle);
-            }
+            return User32Interop.GetWindowText(windowHandle);
         }
 
         /// <summary>
