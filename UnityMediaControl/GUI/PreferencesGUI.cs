@@ -15,7 +15,7 @@ namespace UnityMediaControl
             EditorGUI.BeginDisabledGroup(!Enabled); // disable other options UMC is disabled
 
             PrefOptionGUI("Resume playback on editor pause", Prefs.ResumeOnPause, "Whether or not to unpause your media when you pause the editor");
-            PrefOptionGUI("Check for Spotify", Prefs.CheckForSpotify, "Attempts to control Spotify directly, if it's running. Enabling should stop Spotify from accidentally unpausing if it wasn't playing when you entered playmode. Disable this if you don't use Spotify.");
+            PrefOptionGUI("Control Spotify directly", Prefs.ControlSpotifyDirectly, "Attempts to control Spotify directly, instead of globally pausing/unpausing media. Enabling this should stop Spotify and other applications from accidentally unpausing. Disable this if you don't use Spotify.");
 
             EditorGUI.EndDisabledGroup();
         }

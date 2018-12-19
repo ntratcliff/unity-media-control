@@ -72,22 +72,28 @@ namespace UnityMediaControl
                 if (EditorUtility.audioMasterMute) return;
             }
 
-            if (Preferences.CheckForSpotify)
+            int windowHandle = User32Interop.HWND_BROADCAST;
+
+            if (Preferences.ControlSpotifyDirectly)
             {
                 // check if spotify is already in the desired state (prevents accidental unpause)
                 Spotify.Instance.Refresh();
 
-                if (Spotify.Instance.IsPlaying == playing) return;
+                // make sure spotify is running and isn't already in the desired state
+                if (!Spotify.Instance.IsRunning || Spotify.Instance.IsPlaying == playing) return;
+
+                // control Spotify directly
+                windowHandle = Spotify.Instance.WindowHandle.ToInt32();
             }
 
             // set play state
             if (playing)
             {
-                User32Interop.BroadcastAppcommand(WinAppcommand.MediaPlay);
+                User32Interop.SendAppcommand(windowHandle, WinAppcommand.MediaPlay);
             }
             else
             {
-                User32Interop.BroadcastAppcommand(WinAppcommand.MediaPause);
+                User32Interop.SendAppcommand(windowHandle, WinAppcommand.MediaPause);
             }
 
             pausedMedia = !playing;

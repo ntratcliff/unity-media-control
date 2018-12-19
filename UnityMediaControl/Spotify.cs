@@ -29,14 +29,14 @@ namespace UnityMediaControl
             }
         }
 
-        private IntPtr windowHandle = IntPtr.Zero;
+        public IntPtr WindowHandle { get; private set; }
 
         /// <summary>
         /// Whether or not the Spotify process is running
         /// </summary>
         public bool IsRunning
         {
-            get { return windowHandle != IntPtr.Zero; }
+            get { return WindowHandle != IntPtr.Zero; }
         }
 
         /// <summary>
@@ -85,11 +85,11 @@ namespace UnityMediaControl
         /// Get the title of the Spotify window
         /// </summary>
         /// <returns>The title of the Spotify window, or null if Spotify isn't running</returns>
-        public string GetWindowTitle()
+        private string GetWindowTitle()
         {
             if (!IsRunning) return null;
 
-            return User32Interop.GetWindowText(windowHandle);
+            return User32Interop.GetWindowText(WindowHandle);
         }
 
         /// <summary>
@@ -97,7 +97,7 @@ namespace UnityMediaControl
         /// </summary>
         private void RefreshWindowHandle()
         {
-            windowHandle = User32Interop.GetWindowByProcessName(processName);
+            WindowHandle = User32Interop.GetWindowByProcessName(processName);
         }
     }
 }

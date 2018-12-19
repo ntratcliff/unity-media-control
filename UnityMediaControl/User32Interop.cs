@@ -16,7 +16,7 @@ namespace UnityMediaControl
         /// <summary>
         /// Window handle to use when broadcasting to all windows
         /// </summary>
-        public const int HWIND_BROADCAST = 0xffff;
+        public const int HWND_BROADCAST = 0xffff;
 
         /// <summary>
         /// App command message constant for SendMessage
@@ -83,7 +83,17 @@ namespace UnityMediaControl
         /// <param name="command">The command to broadcast</param>
         public static int BroadcastAppcommand(Appcommand command)
         {
-            return SendMessage(HWIND_BROADCAST, WM_APPCOMMAND, 0, (int)command << 16);
+            return SendAppcommand(HWND_BROADCAST, command);
+        }
+
+        /// <summary>
+        /// Sends a WM_APPCOMMAND message to a specific window
+        /// </summary>
+        /// <param name="hWnd">The window handle to send the message to</param>
+        /// <param name="command">The command to send</param>
+        public static int SendAppcommand(int hWnd, Appcommand command)
+        {
+            return SendMessage(hWnd, WM_APPCOMMAND, 0, (int)command << 16);
         }
 
         /// <summary>

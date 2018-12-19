@@ -17,9 +17,9 @@ namespace UnityMediaControl
             public static EditorPref<bool> ResumeOnPause = new EditorPref<bool>("resumeOnPause", false);
 
             /// <summary>
-            /// Whether or not to check if Spotify is playing
+            /// Whether or not to attempt to control Spotify directly
             /// </summary>
-            public static EditorPref<bool> CheckForSpotify = new EditorPref<bool>("checkForSpotify", true);
+            public static EditorPref<bool> ControlSpotifyDirectly = new EditorPref<bool>("controlSpotifyDirectly", true);
         }
 
         /// <summary>
@@ -38,9 +38,9 @@ namespace UnityMediaControl
         public static bool ResumeOnPause { get { return Prefs.ResumeOnPause.Value; } }
 
         /// <summary>
-        /// Whether or not to check if Spotify is playing
+        /// Whether or not to attempt to control Spotify directly
         /// </summary>
-        public static bool CheckForSpotify { get { return Prefs.CheckForSpotify.Value; } }
+        public static bool ControlSpotifyDirectly { get { return Prefs.ControlSpotifyDirectly.Value; } }
 
         static Preferences()
         {
@@ -54,7 +54,7 @@ namespace UnityMediaControl
         {
             LoadPref(Prefs.Enabled);
             LoadPref(Prefs.ResumeOnPause);
-            LoadPref(Prefs.CheckForSpotify);
+            LoadPref(Prefs.ControlSpotifyDirectly);
 
             Loaded = true;
         }
