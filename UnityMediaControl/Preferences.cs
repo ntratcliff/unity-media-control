@@ -1,6 +1,6 @@
 ﻿using UnityEditor;
 
-namespace UnityMediaControl
+namespace EditorMediaManager
 {
     internal static partial class Preferences
     {
@@ -81,14 +81,13 @@ namespace UnityMediaControl
         /// </summary>
         private class EditorPref<T>
         {
-            public const string PREFIX = "UnityMediaControl_";
             public string Key { get; private set; }
             public T DefaultValue { get; private set; }
             public T Value;
 
             public EditorPref(string key, T defaultValue = default(T))
             {
-                Key = PREFIX + key;
+                Key = Constants.EditorPrefPrefix + key;
                 DefaultValue = defaultValue;
                 Value = defaultValue;
             }

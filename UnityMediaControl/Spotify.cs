@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace UnityMediaControl
+namespace EditorMediaManager
 {
     class Spotify
     {

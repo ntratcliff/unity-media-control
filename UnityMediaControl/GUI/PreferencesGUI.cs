@@ -1,16 +1,16 @@
 ﻿using UnityEditor;
 using UnityEngine;
 
-namespace UnityMediaControl
+namespace EditorMediaManager
 {
     internal static partial class Preferences
     {
-        [PreferenceItem("Media Control")]
+        [PreferenceItem(Constants.GUIName)]
         public static void PreferencesGUI()
         {
             if (!Loaded) LoadPrefs();
 
-            PrefOptionGUI("Enabled", Prefs.Enabled, "Whether or not Unity Media Control is enabled");
+            PrefOptionGUI("Enabled", Prefs.Enabled, "Whether or not " + Constants.AssetName + " is enabled");
 
             EditorGUI.BeginDisabledGroup(!Enabled); // disable other options UMC is disabled
 

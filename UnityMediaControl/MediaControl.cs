@@ -1,7 +1,7 @@
 ﻿using UnityEditor;
-using WinAppcommand = UnityMediaControl.User32Interop.Appcommand;
+using WinAppcommand = EditorMediaManager.User32Interop.Appcommand;
 
-namespace UnityMediaControl
+namespace EditorMediaManager
 {
     [InitializeOnLoad]
     internal static class MediaControl

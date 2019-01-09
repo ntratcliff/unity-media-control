@@ -3,7 +3,7 @@ using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Text;
 
-namespace UnityMediaControl
+namespace EditorMediaManager
 {
     internal static class User32Interop
     {
